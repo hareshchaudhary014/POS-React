@@ -3,10 +3,10 @@ import "./Login.css";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-// import { useAuth } from "../../Components/Auth/auth";
+import { useAuth } from "../../Components/Auth/auth";
 const Login = () => {
   const navigate = useNavigate();
-  // const auth = useAuth();
+  const auth = useAuth();
   const [sucess, setSucess] = useState("");
   // Success message
   const {
@@ -24,7 +24,7 @@ const Login = () => {
       setErrMsg("");
       setSucess("");
       const response = await axios.post(
-        `http://localhost:8000/api/login`,
+        `${auth.baseURL}/api/login`,
         {
           username: username,
           password:password,
@@ -37,12 +37,12 @@ const Login = () => {
         }
       );
       if (response.status === 200) {
-        // auth.setIsLogin(true);
-        // setLoading(false);
-        // auth.login(response.data.user);
+        auth.setIsLogin(true);
+        setLoading(false);
+        auth.login(response.data.user);
         setSucess(response.data.msg);
         setTimeout(() => {
-          navigate('/');
+          navigate('/dashboard');
         }, 2000);
       }
     } catch (err) {

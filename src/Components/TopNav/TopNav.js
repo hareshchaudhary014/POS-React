@@ -41,6 +41,7 @@ let today= dateFormat(new Date(), "mmmm d, dddd");
             <button>
               <span
                 onClick={() => {
+                  console.log('fuck ogf')
                    auth.logout()
                 }}
                 class="material-symbols-outlined mx-3 text-red-500"

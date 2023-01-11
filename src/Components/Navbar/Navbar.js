@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import logo from "./logo.png";
+import logo from "./photo.jpg";
 
 const Navbar = () => {
   const [bigNav, setBigNav] = useState(true);
@@ -19,7 +19,7 @@ const Navbar = () => {
   const [navList, setNavList] = useState([
     {
       navType: "clickable",
-      navLink: "",
+      navLink: "dashboard",
       iconName: "trending_up",
       name: "Dashboard",
     },
@@ -47,21 +47,43 @@ const Navbar = () => {
     },
     {
       navType: "clickable",
-      navLink: "sales",
-      iconName: "shopping_cart_checkout",
-      name: "Sales",
-    },
-    {
-      navType: "clickable",
       navLink: "orders",
       iconName: "local_shipping",
       name: "Orders",
     },
     {
       navType: "clickable",
+      navLink: "sales",
+      iconName: "shopping_cart_checkout",
+      name: "Sales",
+    },
+    {
+      navType: "clickable",
       navLink: "bills",
       iconName: "point_of_sale",
       name: "Bills",
+    },
+
+    {
+      navType: "dropdown",
+      navLink: "",
+      open: false,
+      iconName: "edit_attributes",
+      name: "Attributes",
+      navChilds: [
+        {
+          navType: "clickable",
+          navLink: "categories",
+          iconName: "category",
+          name: "Categories",
+        },
+        {
+          navType: "clickable",
+          navLink: "brands",
+          iconName: "atr",
+          name: "Brands",
+        },
+      ],
     },
     {
       navType: "clickable",
@@ -161,7 +183,7 @@ const Navbar = () => {
                     <img
                       className={
                         bigNav
-                          ? "logo-text w-28 ml-1 font-bold text-3xl block"
+                          ? "logo-text w-32 ml-1 font-bold text-3xl block"
                           : "hidden"
                       }
                       src={logo}

@@ -7,6 +7,11 @@ import TopNav from "./Components/TopNav/TopNav";
 import Navbar from "./Components/Navbar/Navbar";
 import { AuthProvider } from "./Components/Auth/auth";
 import { ProtectedRoute } from "./Components/Auth/ProtectedRoute";
+import Categories from "./pages/Categories/Categories";
+import AddCategory from "./pages/Categories/AddCategory";
+import Brands from "./pages/Brands/Brands";
+import AddBrand from "./pages/Brands/AddBrands";
+import ViewStock from "./pages/Stock/ViewStock";
 
 function App() {
   return (
@@ -18,7 +23,79 @@ function App() {
             <div className="w-full">
               <TopNav />
               <Routes>
-                <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+                <Route
+                  index
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  index
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  index
+                  path="/categories"
+                  element={
+                    <ProtectedRoute>
+                      <Categories />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  index
+                  path="/categories/add-category"
+                  element={
+                    <ProtectedRoute>
+                      <AddCategory />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  index
+                  path="/brands"
+                  element={
+                    <ProtectedRoute>
+                      <Brands />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  index
+                  path="/brands/add-brand"
+                  element={
+                    <ProtectedRoute>
+                      <AddBrand />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  index
+                  path="/stock"
+                  element={
+                    <ProtectedRoute>
+                      <ViewStock />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  index
+                  path="/stocks/add-stock"
+                  element={
+                    <ProtectedRoute>
+                      <AddBrand />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="/login" element={<Login />} />
               </Routes>
             </div>
