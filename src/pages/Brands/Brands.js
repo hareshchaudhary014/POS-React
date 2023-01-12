@@ -5,9 +5,10 @@ import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Categories from "../Categories/Categories";
 // import NoRole from "../../Components/NoRole/NoRole";
 function Brand() {
-  const location = useLocation();
+  // const location = useLocation();
   const [allBrands, setAllBrands] = useState([]);
   // const [unauthorized, setUnauthorized] = useState(false);
   const [renderApp, setRenderApp] = useState(false);
@@ -32,34 +33,42 @@ function Brand() {
   useEffect(() => {
     loadData();
     console.log("rerender");
-  }, [location]);
+  }, []);
 
   const notify = () => {
-    toast.success("Degree deleted successfully");
+    toast.success("Brand deleted successfully");
     loadData();
   };
+
   const notify2 = () => {
     toast.success("Status changed successfully");
     loadData();
   };
   const notifyError = (msg) => toast.error(`${msg}`);
-  const handleDelete = async (data) => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:8000/api/brands/${data}`,
-        { withCredentials: true }
-      );
-      {
-        response.status === 200 && notify();
+  async function handleDelete (data) {
+    console.log(data)
+    const confirmationm = window.confirm("Are you sure to delete this brand?");
+
+    if (confirmationm) {
+      try {
+        const response = await axios.delete(
+          `http://localhost:8000/api/brands/${data}`,
+          { withCredentials: true }
+        );
+        {
+          response.status === 200 && notify();
+        }
+      } catch (err) {
+        console.log(err?.response?.status);
+        // {
+        //   err?.response?.status === 401
+        //     ? setUnauthorized(true)
+        //     : setUnauthorized(false);
+        // }
+        notifyError(
+          "Unable to delete this brand. \n[This brand might be in use.]"
+        );
       }
-    } catch (err) {
-      console.log(err?.response?.status);
-      // {
-      //   err?.response?.status === 401
-      //     ? setUnauthorized(true)
-      //     : setUnauthorized(false);
-      // }
-      notifyError("Unable to delete this degree. \n[This degree is in use.]");
     }
   };
 
@@ -87,6 +96,42 @@ function Brand() {
       // }
       notifyError("Failed to change the status.");
     }
+  };
+
+
+  const handleUpdate = async (slug, val) => {
+    let title = prompt("Edit Brand ??", val);
+    if (title.replace(/\s/g, '').length>0) {
+    console.log(title)
+
+      try {
+        const response = await axios.put(
+          `http://localhost:8000/api/brand/${slug}`,
+          {
+            title: title,
+          },
+          { withCredentials: true }
+        );
+        {
+          if(response.status === 200 ){
+            toast.success("Brand updated Successfully");
+            loadData()
+          }
+        }
+      } catch (err) {
+        console.log(err?.response?.status);
+        // {
+        //   err?.response?.status === 401
+        //     ? setUnauthorized(true)
+        //     : setUnauthorized(false);
+        // }
+        notifyError("Failed to Update Brand.");
+      }
+    }
+    else{
+      toast.error("Brand can not be null!")
+    }
+ 
   };
   return (
     <div className="bg-background min-h-screen p-2">
@@ -133,7 +178,6 @@ function Brand() {
 
                     <tr>
                       <td class="border border-l-0 px-4 py-2 text-center text-green-500">
-                        <i class="fad fa-circle"></i>
                         {index + 1}
                       </td>
                       <td class="border border-l-0 px-4 py-2">
@@ -162,10 +206,15 @@ function Brand() {
                       </td>
                       <td class="border border-l-0 border-r-0 px-4 py-2">
                         <span class="flex justify-center">
-                          <span class="material-symbols-outlined text-xl mx-1 text-white p-1 bg-gray-400 rounded-md cursor-pointer">
+                          <span
+                            onClick={()=>handleUpdate(brands.slug, brands.title)}
+                           class="material-symbols-outlined text-xl mx-1 text-white p-1 bg-gray-400 rounded-md cursor-pointer">
                             edit
                           </span>
-                          <span class="material-symbols-outlined text-xl mx-1 text-white p-1 bg-red-400 rounded-md cursor-pointer">
+                          <span
+                            onClick={()=>handleDelete(brands.id)}
+                            class="material-symbols-outlined text-xl mx-1 text-white p-1 bg-red-400 rounded-md cursor-pointer"
+                          >
                             delete
                           </span>
                         </span>

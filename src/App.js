@@ -12,6 +12,7 @@ import AddCategory from "./pages/Categories/AddCategory";
 import Brands from "./pages/Brands/Brands";
 import AddBrand from "./pages/Brands/AddBrands";
 import ViewStock from "./pages/Stock/ViewStock";
+import AddStock from "./pages/Stock/AddStock";
 
 function App() {
   return (
@@ -80,7 +81,7 @@ function App() {
 
                 <Route
                   index
-                  path="/stock"
+                  path="/stocks"
                   element={
                     <ProtectedRoute>
                       <ViewStock />
@@ -89,10 +90,10 @@ function App() {
                 />
                 <Route
                   index
-                  path="/stocks/add-stock"
+                  path="/add-stock"
                   element={
                     <ProtectedRoute>
-                      <AddBrand />
+                      <AddStock />
                     </ProtectedRoute>
                   }
                 />

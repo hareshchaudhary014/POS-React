@@ -33,7 +33,7 @@ const Navbar = () => {
       navChilds: [
         {
           navType: "clickable",
-          navLink: "stock",
+          navLink: "stocks",
           iconName: "view_agenda",
           name: "View Stocks",
         },

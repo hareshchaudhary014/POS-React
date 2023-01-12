@@ -52,10 +52,13 @@ function Categories() {
     loadData();
   };
   const notifyError = (msg) => toast.error(`${msg}`);
-  const handleDelete = async (data) => {
-    try {
+  const handleDelete = async (slug) => {
+    const confirmationm = window.confirm("Are you sure to delete this category?");
+
+ if (confirmationm) {
+     try {
       const response = await axios.delete(
-        `http://localhost:8000/api/categories/${data}`,
+        `http://localhost:8000/api/categories/${slug}`,
         { withCredentials: true }
       );
       {
@@ -68,8 +71,9 @@ function Categories() {
       //     ? setUnauthorized(true)
       //     : setUnauthorized(false);
       // }
-      notifyError("Unable to delete this degree. \n[This degree is in use.]");
+      notifyError("Unable to delete this category. \n[This category is in use.]");
     }
+ }
   };
 
   const handleStatusChange = async (e) => {
@@ -97,8 +101,43 @@ function Categories() {
       notifyError("Failed to change the status.");
     }
   };
+
+  const handleUpdate = async (slug, val) => {
+    let title = prompt("Edit Brand ??", val);
+    if (title.replace(/\s/g, '').length>0) {
+    console.log(title)
+
+      try {
+        const response = await axios.put(
+          `http://localhost:8000/api/category/${slug}`,
+          {
+            title: title,
+          },
+          { withCredentials: true }
+        );
+        {
+          if(response.status === 200 ){
+            toast.success("Category updated Successfully");
+            loadData()
+          }
+        }
+      } catch (err) {
+        console.log(err?.response?.status);
+        // {
+        //   err?.response?.status === 401
+        //     ? setUnauthorized(true)
+        //     : setUnauthorized(false);
+        // }
+        notifyError("Failed to Update Category.");
+      }
+    }
+    else{
+      toast.error("Brand can not be null!")
+    }
+ 
+  };
   return (
-    <div className="bg-background min-h-screen p-2">
+    <div className="bg-background min-h-screen p-2 overflow-y-scroll">
       <ToastContainer className={"text-sm text-grey"} />
 
       <div className="breadcrum-container flex items-center text-xs pl-2 font-thin text-slate-700">
@@ -141,8 +180,7 @@ function Categories() {
                     // togglerCheck(categories.status),
 
                     <tr>
-                      <td class="border border-l-0 px-4 py-2 text-center text-green-500">
-                        <i class="fad fa-circle"></i>
+                      <td class="border border-l-0 px-4 py-2 text-center">
                         {index + 1}
                       </td>
                       <td class="border border-l-0 px-4 py-2">
@@ -171,10 +209,16 @@ function Categories() {
                       </td>
                       <td class="border border-l-0 border-r-0 px-4 py-2">
                         <span class="flex justify-center">
-                          <span class="material-symbols-outlined text-xl mx-1 text-white p-1 bg-gray-400 rounded-md cursor-pointer">
+                          <span 
+                            onClick={()=>handleUpdate(categories.slug, categories.title)}
+
+                          class="material-symbols-outlined text-xl mx-1 text-white p-1 bg-gray-400 rounded-md cursor-pointer">
                             edit
                           </span>
-                          <span class="material-symbols-outlined text-xl mx-1 text-white p-1 bg-red-400 rounded-md cursor-pointer">
+                          <span 
+                            onClick={()=>handleDelete(categories.id)}
+
+                          class="material-symbols-outlined text-xl mx-1 text-white p-1 bg-red-400 rounded-md cursor-pointer">
                             delete
                           </span>
                         </span>
