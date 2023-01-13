@@ -1,9 +1,68 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-
+// import { Table } from "./UniversityTable";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Unauthorized from "../../Components/Errors/Unauthorized";
+import { StockTable } from "./StockTable";
 function ViewStock() {
-    return (
+  const location = useLocation();
+  const [allStocks, setAllStocks] = useState([]);
+  const [unauthorized, setUnauthorized] = useState(false);
+  const [renderApp, setRenderApp] = useState(false);
+  const loadData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/stocks",
+        { withCredentials: true }
+      );
+      response?.status === 200 && setAllStocks(response?.data?.data);
+      setRenderApp(true);
+      setUnauthorized(false);
+    } catch (err) {
+      {
+        err?.response?.status === 401
+          ? setUnauthorized(true)
+          : setUnauthorized(false);
+      }
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    loadData();
+    console.log("rerender");
+  }, [location]);
+
+  const notify = () => {
+    toast.success("University deleted successfully");
+    loadData();
+  };
+  const notifyError = (msg) => toast.error(`${msg}`);
+  const handleDelete = async (data) => {
+    const confirmationm = window.confirm("Are you sure to delete University?");
+    if (confirmationm) {
+      try {
+        const response = await axios.delete(
+          `http://localhost:8000/api/universities/${data}`,
+          { withCredentials: true }
+        );
+        {
+          response.status === 200 && notify();
+        }
+      } catch (err) {
+        notifyError("Unable to delete University.");
+      }
+    }
+  };
+  return (
+    <>
+      {unauthorized ? (
+        <Unauthorized />
+      ) : (
         <div className="bg-background min-h-screen p-2">
+          <ToastContainer className={"text-sm text-grey"} />
+
           <div className="breadcrum-container flex items-center text-xs pl-2 font-thin text-slate-700">
             <div className="first flex items-center">
               <span class="material-symbols-outlined text-sm">home</span>
@@ -12,28 +71,37 @@ function ViewStock() {
             <div className="divider mx-2">/</div>
             <div className="second">Stocks</div>
           </div>
-     
+
           <div className="flex justify-between">
             <div className="text-left font-bold text-2xl text-slate-500 ml-3">
               Stocks
             </div>
-              <Link
-                to="/stocks/add-stock"
-                className="bg-slate-400 text-white p-2 mr-2 text-sm flex items-center font-main rounded-lg"
-              >
-                <span class="material-symbols-outlined text-sm mr-1">add</span>
-                <span>Add Stock</span>
-              </Link>
+            <Link
+              to="/add-stock"
+              className="bg-slate-400 text-white p-2 mr-2 text-sm flex items-center font-main rounded-lg"
+            >
+              <span class="material-symbols-outlined text-sm mr-1">add</span>
+              <span>Add Stock</span>
+            </Link>
           </div>
+
           <div class="p-2">
-            <div class="card col-span-2 ">
+          {renderApp && <StockTable handleDelete={handleDelete} data={allStocks} />}
+
+            {/* <div class="card col-span-2 ">
               <table class="table-auto w-full text-center">
                 <thead className="bg-slate-200">
                   <tr>
-                    <th class="px-4 py-2 border-r">SN</th>
-                    <th class="px-4 py-2 border-r">Category</th>
-                    <th class="px-4 py-2 border-r">Status</th>
-                    <th class="px-4 py-2">Action</th>
+                    <th className="border p-1">#</th>
+                    <th className="border p-1">Product Name</th>
+                    <th className="border p-1">Quantity</th>
+                    <th className="border p-1">Marked Price</th>
+                    <th className="border p-1">Single Unit</th>
+                    <th className="border p-1">SP of unit</th>
+                    <th className="border p-1">Category</th>
+                    <th className="border p-1">Brand</th>
+                    <th className="border p-1">Vendor</th>
+                    <th className="border p-1">Action</th>
                   </tr>
                 </thead>
                 <tbody class="text-gray-600">
@@ -70,7 +138,9 @@ function ViewStock() {
                     <td class="border border-l-0 px-4 py-2 text-center text-green-500">
                       <i class="fad fa-circle"></i>
                     </td>
-                    <td class="border border-l-0 px-4 py-2">Apple MacBook Pro.</td>
+                    <td class="border border-l-0 px-4 py-2">
+                      Apple MacBook Pro.
+                    </td>
                     <td class="border border-l-0 px-4 py-2">
                       $<span class="num-2"></span>
                     </td>
@@ -82,7 +152,9 @@ function ViewStock() {
                     <td class="border border-l-0 px-4 py-2 text-center text-red-500">
                       <i class="fad fa-circle"></i>
                     </td>
-                    <td class="border border-l-0 px-4 py-2">Samsung Galaxy S9.</td>
+                    <td class="border border-l-0 px-4 py-2">
+                      Samsung Galaxy S9.
+                    </td>
                     <td class="border border-l-0 px-4 py-2">
                       $<span class="num-2"></span>
                     </td>
@@ -120,10 +192,12 @@ function ViewStock() {
                   </tr>
                 </tbody>
               </table>
-            </div>
+            </div> */}
           </div>
         </div>
-      );
+      )}
+    </>
+  );
 }
 
-export default ViewStock
+export default ViewStock;

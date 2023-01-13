@@ -11,7 +11,7 @@ import { useAuth } from "../../Components/Auth/auth";
 
 function AddStock() {
   const navigate = useNavigate();
-  const notify = () => toast.success("University added successfully");
+  const notify = () => toast.success("Products added successfully");
   const notifyError = (msg) => toast.error(`${msg}`);
   const [brand, setBrands] = useState();
   const [categories, setCategories] = useState();
@@ -55,26 +55,10 @@ function AddStock() {
 
   const [renderApp, setRenderApp] = useState(false);
 
-  // useEffect(() => {
-  //     const img = new Image();
-  //     img.src = uniLogo;
-  //     img.onload = () => {
-  //         if (img.width > 912 && img.height > 500) {
-  //             setUniLogo('');
-  //             setError('page_cover_holder', {
-  //                 type: "custom",
-  //                 message: "Cover image size cannot be greater than 912px * 500px",
-  //             })
-  //         }
-  //     }
-  // }, [uniLogo])
-  const handleClick = (id) => {
-    document.getElementById(id).click();
-  };
 
-  const checkCourseLength = () => {
+  const checkProductLength = () => {
     if (stocks.length < 1) {
-      notifyError("University need atleast 1 course");
+      notifyError("Stock need atleast 1 product");
       return false;
     } else {
       return true;
@@ -82,27 +66,14 @@ function AddStock() {
   };
 
   const onSubmit = async (data) => {
-    if (checkCourseLength()) {
+    if (checkProductLength()) {
       try {
-        if (stocks.find((co) => co.name == "")) {
+        if (stocks.find((stk) =>stk.p_name == "")) {
           notifyError("sTOCK cannot be empty");
         } else {
-          const formData = new FormData();
-          // formData.append("name", data.university_name);
-          // formData.append("phone", data.univ_contact);
-          // formData.append("email", data.contact_email);
-          // formData.append("uni_link", data.uni_link);
-          // formData.append("uni_logo_text", data.uni_logo_text);
-          // formData.append("uni_img_text", data.uni_img_text);
-          // formData.append("description", editorText);
-          // formData.append("blog_cover", updatedUniLogo);
-          // formData.append("cover", updatedUniImage);
-          // formData.append("location", JSON.stringify(location));
-          formData.append("stocks", JSON.stringify(stocks));
-          console.log(formData.values);
           const response = await axios.post(
             "http://localhost:8000/api/stocks",
-            formData,
+            {stocks:JSON.stringify(stocks)},
             { withCredentials: true },
             {
               headers: {
@@ -152,7 +123,6 @@ function AddStock() {
         axios.get(`${auth.baseURL}/api/categories`,{withCredentials:true})
     ])
       setBrands(response[0]?.data?.data);
-      console.log(response[0].data.data);
       setCategories(response[1].data.data);
       setRenderApp(true);
     } catch (err) {
@@ -161,16 +131,14 @@ function AddStock() {
   };
 
   useEffect(() => {
-    console.log("here i am");
     loadData();
-    console.log(stocks);
-  }, [stocks]);
+  }, []);
 
   return (
     <div className="bg-background min-h-screen p-2">
-      {/* {renderApp && ( */}
+      {renderApp && (
       <>
-        {/* <ToastContainer className={"text-sm text-grey"} /> */}
+        <ToastContainer className={"text-sm text-grey"} />
         <div className="breadcrum-container flex items-center mt-1 text-xs font-thin text-grey">
           <div className="first flex items-center">
             <span class="material-symbols-outlined text-sm">home</span>
@@ -226,10 +194,10 @@ function AddStock() {
                         <input
                           className={"text-xs border p-3 rounded-lg w-full"}
                           placeholder="Type product name here"
-                          value={item.name}
+                          value={item.p_name}
                           onChange={(e) => {
                             let data = [...stocks];
-                            data[index][`name`] = e.target.value;
+                            data[index][`p_name`] = e.target.value;
                             ssetStocks(data);
                           }}
                           type="text"
@@ -382,7 +350,7 @@ function AddStock() {
           </form>
         </div>
       </>
-      {/* )} */}
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import dateFormat, { masks } from "dateformat";
+import dateFormat from "dateformat";
 
 import { useAuth } from '../Auth/auth'
 const TopNav = () => {
@@ -41,7 +41,6 @@ let today= dateFormat(new Date(), "mmmm d, dddd");
             <button>
               <span
                 onClick={() => {
-                  console.log('fuck ogf')
                    auth.logout()
                 }}
                 class="material-symbols-outlined mx-3 text-red-500"
